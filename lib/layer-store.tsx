@@ -1,8 +1,28 @@
 import { createStore } from "zustand/vanilla";
-import { useStore } from "zustand";
+import { StoreApi, useStore } from "zustand";
 import React from "react";
 import { persist } from "zustand/middleware";
-import createZustandContext from "./ZustandContext";
+
+const createZustandContext = <TInitial, TStore extends StoreApi<any>>(
+  getStore: (initial: TInitial) => TStore,
+) => {
+  const Context = React.createContext(null as any as TStore);
+
+  const Provider = (props: {
+    children?: React.ReactNode;
+    initialValue: TInitial;
+  }) => {
+    const [store] = React.useState(getStore(props.initialValue));
+
+    return <Context.Provider value={store}>{props.children}</Context.Provider>;
+  };
+
+  return {
+    useContext: () => React.useContext(Context),
+    Context,
+    Provider,
+  };
+};
 
 export type Layer = {
   publicId?: string;
@@ -104,7 +124,7 @@ export const LayerStore = createZustandContext(getStore);
 export function useLayerStore<T>(selector: (state: State) => T) {
   const store = React.useContext(LayerStore.Context);
   if (!store) {
-    throw new Error("Missing image store provider");
+    throw new Error("Missing LayerStore provider");
   }
   return useStore(store, selector);
 }
