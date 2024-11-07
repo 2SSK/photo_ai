@@ -20,7 +20,7 @@ type UploadResult =
 
 export const uploadImage = actionClient
   .schema(formData)
-  .action(async ({ parsedInput: { image } }) => {
+  .action(async ({ parsedInput: { image } }): Promise<UploadResult> => {
     const formImage = image.get("image");
 
     if (!formImage || !(formImage instanceof File))

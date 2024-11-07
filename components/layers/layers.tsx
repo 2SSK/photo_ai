@@ -12,6 +12,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Layers2 } from "lucide-react";
+import LayerImage from "./layer-image";
+import LayerInfo from "./layer-info";
 
 const Layers = () => {
   const layers = useLayerStore((state) => state.layers);
@@ -33,7 +35,7 @@ const Layers = () => {
         </div>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
-        {layers.map((layer) => (
+        {layers.map((layer, index) => (
           <div
             key={layer.id}
             className={cn(
@@ -48,6 +50,8 @@ const Layers = () => {
                     New Layer
                   </p>
                 ) : null}
+                <LayerImage layer={layer} />
+                <LayerInfo layer={layer} layerIndex={index} />
               </div>
             </div>
           </div>
