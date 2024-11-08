@@ -12,7 +12,7 @@ const ActiveImage = () => {
   if (!activeLayer.url) return null;
 
   const renderLayer = (layer: Layer) => (
-    <div>
+    <div className="relative w-full h-full flex items-center justify-center">
       {layer.resourceType === "image" && (
         <Image
           src={layer.url!}
