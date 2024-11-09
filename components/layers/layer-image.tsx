@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Layer } from "@/lib/layer-store";
 import Image from "next/image";
 

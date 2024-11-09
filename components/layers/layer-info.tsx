@@ -1,6 +1,7 @@
 "use client";
 
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import React from "react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Ellipsis, Trash } from "lucide-react";
 import { Layer, useLayerStore } from "@/lib/layer-store";
@@ -18,12 +19,12 @@ export default function LayerInfo({
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="outline">
-          <Ellipsis size={14} />
+          <Ellipsis size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="text-xs">
         <h3 className="text-lg font-medium text-center mb-2">
           Layer {layer.id}
         </h3>
@@ -35,7 +36,7 @@ export default function LayerInfo({
             <span className="font-bold">Format:</span> {layer.format}
           </p>
           <p>
-            <span className="font-bold">Size:</span> {layer.width}X
+            <span className="font-bold"> Size:</span> {layer.width}X
             {layer.height}
           </p>
         </div>
@@ -45,8 +46,10 @@ export default function LayerInfo({
             setActiveLayer(layerIndex === 0 ? layers[1].id : layers[0].id);
             removeLayer(layer.id);
           }}
+          variant={"destructive"}
+          className="flex items-center gap-2 w-full"
         >
-          <span>Delete Layer</span>
+          <span> Delete Layer</span>
           <Trash size={14} />
         </Button>
       </DialogContent>

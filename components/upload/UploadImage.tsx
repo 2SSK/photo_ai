@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { cn } from "@/lib/utils";
 import { useDropzone } from "react-dropzone";
 import { Card, CardContent } from "../ui/card";
@@ -21,7 +22,7 @@ export default function UploadImage() {
       "image/webp": [".webp"],
       "image/jpeg": [".jpeg"],
     },
-    onDrop: async (acceptedFiles, fileRejections) => {
+    onDrop: async (acceptedFiles) => {
       if (acceptedFiles.length) {
         const formData = new FormData();
         formData.append("image", acceptedFiles[0]);
