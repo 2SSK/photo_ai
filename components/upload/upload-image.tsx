@@ -1,14 +1,18 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/lib/utils";
-import { useDropzone } from "react-dropzone";
-import { Card, CardContent } from "../ui/card";
-import { useImageStore } from "@/lib/image-store";
-import { useLayerStore } from "@/lib/layer-store";
 import { uploadImage } from "@/server/upload-image";
+import { useImageStore } from "@/lib/store";
+import { useDropzone } from "react-dropzone";
+import Lottie from "lottie-react";
+import { Card, CardContent } from "../ui/card";
+import { cn } from "@/lib/utils";
+import { useLayerStore } from "@/lib/layer-store";
+import imageAnimation from "@/public/animations/image-upload.json";
+import { toast } from "sonner";
 
 export default function UploadImage() {
+  const setTags = useImageStore((state) => state.setTags);
   const setGenerating = useImageStore((state) => state.setGenerating);
   const activeLayer = useLayerStore((state) => state.activeLayer);
   const updateLayer = useLayerStore((state) => state.updateLayer);
@@ -22,7 +26,7 @@ export default function UploadImage() {
       "image/webp": [".webp"],
       "image/jpeg": [".jpeg"],
     },
-    onDrop: async (acceptedFiles) => {
+    onDrop: async (acceptedFiles, fileRejections) => {
       if (acceptedFiles.length) {
         const formData = new FormData();
         formData.append("image", acceptedFiles[0]);
@@ -41,8 +45,8 @@ export default function UploadImage() {
           resourceType: "image",
         });
         setActiveLayer(activeLayer.id);
-
         const res = await uploadImage({ image: formData });
+
         if (res?.data?.success) {
           updateLayer({
             id: activeLayer.id,
@@ -54,12 +58,20 @@ export default function UploadImage() {
             format: res.data.success.format,
             resourceType: res.data.success.resource_type,
           });
+          setTags(res.data.success.tags);
+
           setActiveLayer(activeLayer.id);
+          console.log(activeLayer);
           setGenerating(false);
         }
         if (res?.data?.error) {
           setGenerating(false);
         }
+      }
+
+      if (fileRejections.length) {
+        console.log("rejected");
+        toast.error(fileRejections[0].errors[0].message);
       }
     },
   });
@@ -76,6 +88,7 @@ export default function UploadImage() {
         <CardContent className="flex flex-col h-full items-center justify-center px-2 py-24  text-xs ">
           <input {...getInputProps()} />
           <div className="flex items-center flex-col justify-center gap-4">
+            <Lottie className="h-48" animationData={imageAnimation} />
             <p className="text-muted-foreground text-2xl">
               {isDragActive
                 ? "Drop your image here!"

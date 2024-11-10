@@ -19,8 +19,7 @@ type UploadResult =
   | { error: string; success?: never };
 
 export const uploadImage = actionClient
-  .schema(formData)
-  .action(async ({ parsedInput: { image } }): Promise<UploadResult> => {
+  .schema(formData) .action(async ({ parsedInput: { image } }): Promise<UploadResult> => {
     console.log(image);
     const formImage = image.get("image");
 
@@ -36,7 +35,7 @@ export const uploadImage = actionClient
       return new Promise<UploadResult>((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
-            upload_preset: "restyled",
+            upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
             use_filename: true,
             unique_filename: false,
             filename_override: file.name,
